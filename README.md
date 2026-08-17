@@ -1,18 +1,46 @@
 # swa-sos-skill
 
-The Claude skill partners install when integrating with the **SWA Odds Service
-(SOS)**. It ships alongside the SOS MCP server, which is served by
-[cypher](https://github.com/SWAProbet/cypher) at `/docs/mcp/sos`.
+The client side of a **SWA Odds Service (SOS)** integration: the MCP server a
+partner's agent runs, and the Claude skill that drives it.
 
 ## What is here
 
 ```
+server/
+└── src/index.ts                    the SOS MCP server (stdio), installable —
+                                    fronts the live SOS documentation service,
+                                    so every answer is the published content
 sos-integration/
-├── SKILL.md                        the skill itself
+├── SKILL.md                        the integration skill
 └── references/troubleshooting.md   loaded on demand, when something is wrong
 dist/
 └── sos-integration.skill           the packaged artefact partners receive
 ```
+
+## Running the MCP server
+
+```
+cd server && npm install && npm run build
+```
+
+Then in any MCP client:
+
+```json
+{
+  "mcpServers": {
+    "swa-odds-service": {
+      "command": "node",
+      "args": ["<path>/server/dist/index.js"]
+    }
+  }
+}
+```
+
+`SOS_MCP_URL` overrides the documentation endpoint (defaults to production).
+The server is a front, not a re-implementation: content is answered by the SOS
+documentation service, which is what keeps it current the moment an editor
+saves. Remote-capable clients can also connect straight to the streamable-HTTP
+endpoint at `/docs/mcp/sos` without this package.
 
 ## How it fits with the MCP
 

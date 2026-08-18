@@ -38,8 +38,29 @@ the constructor options with their real defaults and a `knownBehaviour` list;
 both of the traps below come back in that list, so you get them without relying
 on this file being current.
 
-If the MCP is not available, the published docs are the fallback, and the
-specifics in this file still hold.
+## When the MCP is unreachable: stop, do not improvise
+
+The only safe fallbacks are the published docs site and the specifics this
+file itself confirms. Everything else is a hard rule:
+
+- **Never generate example payloads, market lists or market ids from general
+  betting knowledge.** They will be wrong three ways at once: format (the
+  feed is XML over AMQP — a JSON "price update" is wrong by construction),
+  ids (SOS market ids are templates like `fight_winner_bin{ }`, not numeric
+  ids), and coverage (invented markets look authoritative exactly where
+  being wrong is expensive). A worked example has one source:
+  `sos_message_reference`, live.
+- **The published sports list is exhaustive.** `sos_overview` ends with it.
+  Asked about any sport not on it — football, basketball, anything — the
+  answer is "not offered by SOS", never an example. Do not pick a
+  "different sport" that SOS does not carry.
+- **Fix the connection instead of working around it.** In order: (1)
+  `git pull && npm run build` — the default endpoint is
+  `https://docs.swa.one/docs/mcp/sos` and older clones default to a host
+  that never served it; (2) set `SOS_MCP_URL` explicitly if you need a
+  different environment; (3) the endpoint is public — no VPN needed. If it
+  still fails, say so and ask whoever owns the docs. **Do not path-probe
+  production gateways guessing routes.**
 
 ## Three things that will cost you an afternoon
 

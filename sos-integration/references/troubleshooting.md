@@ -66,6 +66,17 @@ Usually credentials accepted at TCP level but rejected at AMQP level, or two
 consumers using the same exclusive queue name. The client reconnects on its own,
 so this shows up as a loop rather than a single failure.
 
+### The MCP endpoint is unreachable (405, or HTML instead of JSON-RPC)
+
+A 405 on POST, or the docs website's HTML coming back from the MCP path,
+almost always means an **old clone with a stale default endpoint**: run
+`git pull && npm run build` — the server now defaults to
+`https://docs.swa.one/docs/mcp/sos`, which is public (no VPN). Otherwise
+set `SOS_MCP_URL` to the right environment. While it is down, follow the
+skill's hard rule: no invented examples, no fabricated markets, no
+guessed sports — and no probing alternative paths on production
+gateways.
+
 ## Message problems
 
 ### XML fails to parse

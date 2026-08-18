@@ -30,7 +30,7 @@ import {
 
 // Trailing slashes and accidental whitespace in SOS_MCP_URL are the kind of
 // config typo that should not cost anyone an afternoon.
-const REMOTE = (process.env.SOS_MCP_URL ?? "https://api.probet.live/docs/mcp/sos")
+const REMOTE = (process.env.SOS_MCP_URL ?? "https://docs.swa.one/docs/mcp/sos")
   .trim()
   .replace(/\/+$/, "");
 

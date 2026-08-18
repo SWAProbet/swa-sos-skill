@@ -23,6 +23,7 @@ skill was written.
 
 | Question | Tool |
 |---|---|
+| Which sports are published? | `sos_overview` — the list is appended at the end |
 | What is SOS, how do messages flow? | `sos_overview` |
 | How do I connect and get a first message? | `sos_quickstart` |
 | What are the exact client options, events, methods? | `sos_client_reference` |

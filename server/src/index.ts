@@ -28,7 +28,14 @@ import {
  * carries the integration *procedure*; this server carries the *content*.
  */
 
-const REMOTE = process.env.SOS_MCP_URL ?? "https://api.probet.live/docs/mcp/sos";
+// Trailing slashes and accidental whitespace in SOS_MCP_URL are the kind of
+// config typo that should not cost anyone an afternoon.
+const REMOTE = (process.env.SOS_MCP_URL ?? "https://api.probet.live/docs/mcp/sos")
+  .trim()
+  .replace(/\/+$/, "");
+
+/** A hung remote must become an answer, not a hang. */
+const FETCH_TIMEOUT_MS = 25_000;
 const PROTOCOL_VERSION = "2025-03-26";
 
 interface JsonRpcResponse {
@@ -77,12 +84,17 @@ async function rpc(method: string, params: unknown, retriesLeft = RETRY_DELAYS_M
       method: "POST",
       headers,
       body: JSON.stringify({ jsonrpc: "2.0", id: requestId, method, params }),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
   } catch (error) {
+    const timedOut = error instanceof Error && error.name === "TimeoutError";
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `could not reach the SOS documentation service at ${REMOTE} (${detail}). ` +
-        `The service may be down, or SOS_MCP_URL may need to point at the right endpoint.`
+      timedOut
+        ? `the SOS documentation service at ${REMOTE} did not answer within ${FETCH_TIMEOUT_MS / 1000}s. ` +
+            `It may be overloaded or unreachable; try again, or point SOS_MCP_URL elsewhere.`
+        : `could not reach the SOS documentation service at ${REMOTE} (${detail}). ` +
+            `The service may be down, or SOS_MCP_URL may need to point at the right endpoint.`
     );
   }
 

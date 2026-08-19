@@ -1,7 +1,7 @@
 {
   "name": "@swa/sos-mcp",
   "version": "0.1.0",
-  "description": "MCP server for integrating with the SWA Odds Service (SOS) — the client-side entry point to the live SOS documentation and catalogue.",
+  "description": "MCP server for integrating with the SWA Odds Service (SOS): the client-side entry point to the live SOS documentation and catalogue.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

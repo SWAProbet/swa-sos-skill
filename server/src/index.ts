@@ -10,16 +10,16 @@ import {
  * The SWA Odds Service MCP, from the client's side of the integration.
  *
  * Partners run this locally (stdio) in Claude Desktop, Claude Code, or any
- * other MCP client. Every tool — the market catalogues, message schemas,
+ * other MCP client. Every tool: the market catalogues, message schemas,
  * connection and recovery documentation, BetBuilder combinations, the SDK
- * reference — is answered by the live SOS documentation service, so what an
+ * reference: is answered by the live SOS documentation service, so what an
  * agent reads through this server is exactly what is published, current the
  * moment an editor saves.
  *
  * This is deliberately a front, not a re-implementation: the content lives in
  * the SOS documentation CMS and is served from its MCP endpoint (streamable
  * HTTP). Duplicating the rendering here would mean answers that age. What
- * this package adds is the client-side packaging — an installable server that
+ * this package adds is the client-side packaging: an installable server that
  * works over stdio everywhere, with the endpoint as configuration:
  *
  *   SOS_MCP_URL   defaults to the production docs endpoint.
@@ -126,7 +126,7 @@ async function rpc(method: string, params: unknown, retriesLeft = RETRY_DELAYS_M
   if (body.result === undefined) {
     if (retriesLeft > 0) return recycle();
     throw new Error(
-      `empty response from the SOS docs endpoint for ${method} — the service may still be starting; try again shortly`
+      `empty response from the SOS docs endpoint for ${method}: the service may still be starting; try again shortly`
     );
   }
   return body.result;

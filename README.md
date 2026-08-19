@@ -7,7 +7,7 @@ partner's agent runs, and the Claude skill that drives it.
 
 ```
 server/
-└── src/index.ts                    the SOS MCP server (stdio), installable —
+└── src/index.ts                    the SOS MCP server (stdio), installable,
                                     fronts the live SOS documentation service,
                                     so every answer is the published content
 sos-integration/
@@ -47,7 +47,7 @@ endpoint at `/docs/mcp/sos` without this package.
 The two are complementary rather than duplicative:
 
 - The **MCP server** reads the live documentation out of the CMS and answers
-  what the feed contains — market catalogues, message schemas, connection
+  what the feed contains: market catalogues, message schemas, connection
   details, recovery behaviour.
 - The **skill** carries the procedure and the traps: what order to bring an
   integration up in, and which failure to suspect first.
@@ -56,7 +56,7 @@ The dividing line is whether an editor could change it. If they could, it
 belongs in the CMS and reaches Claude through the MCP, so it stays current
 without anyone repackaging a skill. That is why the skill tells Claude to call
 `sos_client_reference` before writing any client configuration rather than
-restating the options here — the authoritative version comes from the live docs.
+restating the options here: the authoritative version comes from the live docs.
 
 ## Giving it to a partner
 
@@ -75,7 +75,7 @@ client at the MCP server:
 ```
 
 No credentials. That server is read-only and unauthenticated because everything
-it returns is already published documentation — the internal server at
+it returns is already published documentation: the internal server at
 `/docs/mcp` is the one that needs an admin API key.
 
 ## Rebuilding after an edit
@@ -96,4 +96,4 @@ partner's machine.
 | Repo | Why you would open it |
 |---|---|
 | [cypher](https://github.com/SWAProbet/cypher) | The docs site, the CMS, and both MCP servers |
-| [swa-uof-sdk](https://github.com/SWAProbet/swa-uof-sdk) | The client SDK the skill teaches. Still named `uof` — it predates the SOS rename and is deliberately unchanged so existing integrations keep working |
+| [swa-uof-sdk](https://github.com/SWAProbet/swa-uof-sdk) | The client SDK the skill teaches. Still named `uof`: it predates the SOS rename and is deliberately unchanged so existing integrations keep working |

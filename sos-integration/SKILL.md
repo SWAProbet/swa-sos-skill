@@ -64,13 +64,18 @@ file itself confirms. Everything else is a hard rule:
 
 ## Three things that will cost you an afternoon
 
-**The package is not called SOS.** The product was renamed from Unified Odds
-Feed to SWA Odds Service, but the npm package is still `@swa/uof-sdk` and the
-class is still `SwaUofClient`. This is deliberate, so existing integrations keep
-working. Import those names: an SOS-prefixed variant does not exist.
+**The package is `@swa-voltron/sos-sdk`.** The product was renamed from Unified
+Odds Feed to SWA Odds Service, and the npm package followed on 3 Sep 2026: it is
+published under the `swa-voltron` scope (the `swa` npm org was taken) and the
+class is `SosClient`. The UOF-era names, `SwaUofClient` and `@swa/uof-sdk`,
+survive only as deprecated aliases inside the package; do not teach them.
+
+```bash
+npm install @swa-voltron/sos-sdk
+```
 
 ```typescript
-import { SwaUofClient } from "@swa/uof-sdk";
+import { SosClient } from "@swa-voltron/sos-sdk";
 ```
 
 **The default binding patterns are MMA-only.** `bindingPatterns` defaults to
@@ -108,7 +113,7 @@ isolation than in combination.
 4. **Then handle `oddsChange`, `betSettlement` and `betStop`.**
 
 ```typescript
-const client = new SwaUofClient({
+const client = new SosClient({
   accessToken: process.env.SOS_ACCESS_TOKEN,
   amqpHost: "amqps://<broker-host>",
   apiHost: "https://<api-host>",
@@ -180,7 +185,7 @@ Match the symptom, since the causes are unrelated:
 | Fixtures are for the wrong sport | `getFixtures()`: use the REST endpoint instead |
 | Odds stop after a network blip | `autoRecover`, and whether `recoveryCompleted` fires |
 | A market id does not match anything | It is a template: see above |
-| Import fails | The package is `@swa/uof-sdk`, not an SOS-named one |
+| Import fails | The package is `@swa-voltron/sos-sdk`; `@swa/sos-sdk` and `@swa/uof-sdk` were never published under those names |
 
 `references/troubleshooting.md` has the longer version, including what to log
 when escalating to SWA.

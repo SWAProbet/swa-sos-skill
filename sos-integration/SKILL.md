@@ -32,6 +32,9 @@ skill was written.
 | What happens after a disconnect? | `sos_recovery` |
 | Which markets will I receive? | `sos_market_catalogue` |
 | Which legs can be combined? | `sos_betbuilder_combinations` |
+| How do I authenticate: API key, JWT exchange, AMQP credentials? | `sos_authentication` |
+| Which events exist, with the ids to map onto my own? | `sos_fixtures` |
+| Current odds for one event over REST, not the queue? | `sos_probabilities` |
 
 Call `sos_client_reference` before writing any client configuration. It returns
 the constructor options with their real defaults and a `knownBehaviour` list;
@@ -147,6 +150,24 @@ provisional: during recovery you are replaying history, so a market may move
 several times in quick succession before settling on its current state. Ask
 `sos_recovery` for the detail, and drive recovery through the REST API only if
 you are consuming with a plain AMQP client rather than the SDK.
+
+The replay contract, from the published guide: recovery uses the consumer's own
+exclusive queue named by `consumer_queue` (no separate recovery queue is
+created), replayed messages keep their original event routing key,
+`snapshot_complete` arrives on that same queue carrying the request id and
+ends the replay, and the same deduplication, idempotent handling and
+acknowledgement rules apply as for live traffic. Checkpoint the producer,
+message timestamp and messageId after each successfully applied message, and
+start recovery from that timestamp; messages are retained server-side for
+replay for 72 hours by default.
+
+Two REST guides sit beside the feed: `sos_fixtures` lists every event the feed
+holds, with its URN, competitors, scheduled time and status, so ids can be
+mapped before an event goes live (filters are not validated: a status the feed
+does not use returns an empty list, not an error), and `sos_probabilities`
+returns the current odds for one event, market, or market and specifier set in
+the HTTP response body. `sos_authentication` covers the API key header, the
+JWT exchange and lifetime, and the separate AMQP credentials.
 
 ## Reading the market catalogue
 

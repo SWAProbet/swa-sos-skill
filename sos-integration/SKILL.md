@@ -1,6 +1,6 @@
 ---
 name: sos-integration
-description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa/uof-sdk, SwaUofClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA: including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
+description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa-voltron/sos-sdk, SosClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA: including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
 ---
 
 # Integrating with the SWA Odds Service
@@ -67,11 +67,9 @@ file itself confirms. Everything else is a hard rule:
 
 ## Three things that will cost you an afternoon
 
-**The package is `@swa-voltron/sos-sdk`.** The product was renamed from Unified
-Odds Feed to SWA Odds Service, and the npm package followed on 3 Sep 2026: it is
-published under the `swa-voltron` scope (the `swa` npm org was taken) and the
-class is `SosClient`. The UOF-era names, `SwaUofClient` and `@swa/uof-sdk`,
-survive only as deprecated aliases inside the package; do not teach them.
+**The package is `@swa-voltron/sos-sdk`.** It is published under the
+`swa-voltron` scope (the `swa` npm org was taken), and the class is `SosClient`.
+Teach those two names and no others.
 
 ```bash
 npm install @swa-voltron/sos-sdk
@@ -95,7 +93,7 @@ integrating and returns them with a 200. For any other sport, call the REST
 endpoint yourself:
 
 ```
-GET {apiHost}/uof-api/v1/sports/{sport}/events/json
+GET {apiHost}/sos-api/v1/sports/{sport}/events/json
 ```
 
 Confirm all three against `sos_client_reference` rather than trusting this list
@@ -139,7 +137,7 @@ The client emits `oddsChange`, `betSettlement`, `betStop`, `alive`, `connected`,
 `disconnected`, `recoveryStarted`, `recoveryCompleted` and `error`.
 
 There is **no `recoveryFailed` event**: a failed recovery surfaces on `error`
-like anything else. Older documentation described one, along with a `UofSdk`
+like anything else. Older documentation described one, along with a client
 class that was never exported. If you find code listening for either, it has
 been silently dead.
 
@@ -206,7 +204,7 @@ Match the symptom, since the causes are unrelated:
 | Fixtures are for the wrong sport | `getFixtures()`: use the REST endpoint instead |
 | Odds stop after a network blip | `autoRecover`, and whether `recoveryCompleted` fires |
 | A market id does not match anything | It is a template: see above |
-| Import fails | The package is `@swa-voltron/sos-sdk`; `@swa/sos-sdk` and `@swa/uof-sdk` were never published under those names |
+| Import fails | The package is `@swa-voltron/sos-sdk`; nothing was ever published under the `@swa` scope |
 
 `references/troubleshooting.md` has the longer version, including what to log
 when escalating to SWA.

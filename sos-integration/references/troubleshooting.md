@@ -38,7 +38,7 @@ means `aliveTimeoutMs` fires and the client starts recovering repeatedly.
 a 200. Call the REST endpoint directly:
 
 ```
-GET {apiHost}/uof-api/v1/sports/{sport}/events/json
+GET {apiHost}/sos-api/v1/sports/{sport}/events/json
 Authorization: <your API key>
 ```
 

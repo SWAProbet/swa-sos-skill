@@ -96,4 +96,4 @@ partner's machine.
 | Repo | Why you would open it |
 |---|---|
 | [cypher](https://github.com/SWAProbet/cypher) | The docs site, the CMS, and both MCP servers |
-| [sos-sdk](https://github.com/SWAProbet/sos-sdk) | The client SDK the skill teaches, published as `@swa-voltron/sos-sdk` exporting `SosClient`; the UOF-era names remain as deprecated aliases |
+| [sos-sdk](https://github.com/SWAProbet/sos-sdk) | The client SDK the skill teaches, published as `@swa-voltron/sos-sdk` exporting `SosClient` |

@@ -19,18 +19,21 @@ These produce no error, which is why they dominate the list.
 ### Connected, heartbeats arriving, no odds
 
 The queue is bound to routing keys that no message matches. `bindingPatterns`
-defaults to `['mma.live.#', 'system.live.alive.#']`, so any sport other than MMA
+defaults to `['mma.live.#', 'system.live.alive.mma', 'system.live.alive.-']`, so any sport other than MMA
 receives only the heartbeats: which is exactly what makes this confusing, since
 the connection looks healthy.
 
 Set the sport prefix explicitly:
 
 ```typescript
-bindingPatterns: ["tennis.live.#", "system.live.alive.#"],
+bindingPatterns: ["tennis.live.#", "system.live.alive.tennis"],
 ```
 
-Keep `system.live.alive.#` in the list. Dropping it stops the heartbeats, which
-means `aliveTimeoutMs` fires and the client starts recovering repeatedly.
+Keep your sport's heartbeat key, `system.live.alive.<sport>`, in the list. Dropping
+it stops the heartbeats, which means `aliveTimeoutMs` fires and the client starts
+recovering repeatedly. Do not bind `system.live.alive.#`: every sport publishes to
+the same exchange, so another sport's heartbeat would keep the timer from ever
+firing and an outage of your own feed would go unnoticed.
 
 ### Fixtures are for the wrong sport
 
@@ -106,7 +109,7 @@ messages arrive over AMQP. Check `apiHost` connectivity separately from
 
 ### Recovery loops
 
-Almost always the heartbeats: if `system.live.alive.#` is missing from
+Almost always the heartbeats: if `system.live.alive.<sport>` is missing from
 `bindingPatterns`, no `alive` arrives, `aliveTimeoutMs` expires, recovery
 triggers, and the cycle repeats.
 

@@ -1,6 +1,6 @@
 ---
 name: sos-integration
-description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa-voltron/sos-sdk, SosClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA: including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
+description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa-voltron/sos-sdk, SosClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA, including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
 ---
 
 # Integrating with the SWA Odds Service
@@ -80,12 +80,12 @@ import { SosClient } from "@swa-voltron/sos-sdk";
 ```
 
 **The default binding patterns are MMA-only.** `bindingPatterns` defaults to
-`['mma.live.#', 'system.live.alive.#']`. Integrating tennis and leaving that
+`['mma.live.#', 'system.live.alive.mma', 'system.live.alive.-']`. Integrating tennis and leaving that
 default means the queue binds to nothing relevant: no messages, no error, no
 clue. Set it explicitly for anything other than MMA.
 
 ```typescript
-bindingPatterns: ["tennis.live.#", "system.live.alive.#"],
+bindingPatterns: ["tennis.live.#", "system.live.alive.tennis"],
 ```
 
 **`getFixtures()` ignores the sport.** It requests MMA fixtures whatever you are
@@ -118,7 +118,7 @@ const client = new SosClient({
   accessToken: process.env.SOS_ACCESS_TOKEN,
   amqpHost: "amqps://<broker-host>",
   apiHost: "https://<api-host>",
-  bindingPatterns: ["<sport>.live.#", "system.live.alive.#"],
+  bindingPatterns: ["<sport>.live.#", "system.live.alive.<sport>"],
   aliveTimeoutMs: 30_000,
   autoRecover: true,
 });

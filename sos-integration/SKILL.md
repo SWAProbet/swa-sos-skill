@@ -1,6 +1,6 @@
 ---
 name: sos-integration
-description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa-voltron/sos-sdk, SosClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA: including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
+description: Integrate an application with the SWA Odds Service (SOS), connecting to the live odds feed, consuming odds changes, settlements and heartbeats over AMQP, handling recovery, and mapping SWA market templates onto your own markets. Use this whenever someone mentions SOS, the SWA Odds Service, the SWA odds feed, @swa-voltron/sos-sdk, SosClient, or is wiring up live MMA, boxing, tennis, table tennis or volleyball odds from SWA, including when they only describe the symptom ("my consumer connects but no messages arrive", "odds stopped after a disconnect", "what do these market ids mean") without naming the product.
 ---
 
 # Integrating with the SWA Odds Service

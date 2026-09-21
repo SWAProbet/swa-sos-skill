@@ -80,12 +80,12 @@ import { SosClient } from "@swa-voltron/sos-sdk";
 ```
 
 **The default binding patterns are MMA-only.** `bindingPatterns` defaults to
-`['mma.live.#', 'system.live.alive.#']`. Integrating tennis and leaving that
+`['mma.live.#', 'system.live.alive.mma', 'system.live.alive.-']`. Integrating tennis and leaving that
 default means the queue binds to nothing relevant: no messages, no error, no
 clue. Set it explicitly for anything other than MMA.
 
 ```typescript
-bindingPatterns: ["tennis.live.#", "system.live.alive.#"],
+bindingPatterns: ["tennis.live.#", "system.live.alive.tennis"],
 ```
 
 **`getFixtures()` ignores the sport.** It requests MMA fixtures whatever you are
@@ -118,7 +118,7 @@ const client = new SosClient({
   accessToken: process.env.SOS_ACCESS_TOKEN,
   amqpHost: "amqps://<broker-host>",
   apiHost: "https://<api-host>",
-  bindingPatterns: ["<sport>.live.#", "system.live.alive.#"],
+  bindingPatterns: ["<sport>.live.#", "system.live.alive.<sport>"],
   aliveTimeoutMs: 30_000,
   autoRecover: true,
 });

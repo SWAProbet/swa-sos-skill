@@ -18,18 +18,19 @@ These produce no error, which is why they dominate the list.
 
 ### Connected, heartbeats arriving, no odds
 
-The queue is bound to routing keys that no message matches. `bindingPatterns`
-defaults to `['mma.live.#', 'system.live.alive.mma', 'system.live.alive.-']`, so any sport other than MMA
-receives only the heartbeats: which is exactly what makes this confusing, since
-the connection looks healthy.
+The queue is bound to routing keys that no message matches. `sport` defaults
+to `mma`, and the default bindings follow it, so any other sport left on the
+default receives no odds. The connection still looks healthy, which is what
+makes this confusing.
 
-Set the sport prefix explicitly:
+Set the sport:
 
 ```typescript
-bindingPatterns: ["tennis.live.#", "system.live.alive.tennis"],
+sport: "tennis",
 ```
 
-Keep your sport's heartbeat key, `system.live.alive.<sport>`, in the list. Dropping
+If you pass your own `bindingPatterns`, keep your sport's heartbeat key,
+`system.live.alive.<sport>`, in the list. Dropping
 it stops the heartbeats, which means `aliveTimeoutMs` fires and the client starts
 recovering repeatedly. Do not bind `system.live.alive.#`: every sport publishes to
 the same exchange, so another sport's heartbeat would keep the timer from ever
@@ -37,12 +38,12 @@ firing and an outage of your own feed would go unnoticed.
 
 ### Fixtures are for the wrong sport
 
-`getFixtures()` requests MMA regardless of what you are integrating and returns
-a 200. Call the REST endpoint directly:
+`getFixtures()` asks for the client's configured `sport`, which defaults to
+`mma`. Set `sport`. Without the SDK, call the REST endpoint with your API key:
 
 ```
-GET {apiHost}/sos-api/v1/sports/{sport}/events/json
-Authorization: <your API key>
+GET {apiHost}/sos/v1/sports/{sport}/events/json
+X-API-Key: <your API key>
 ```
 
 ### Handler never fires and no error is logged
@@ -96,16 +97,29 @@ published, not current.
 
 ### Duplicate or out-of-order odds after a blip
 
-Expected during recovery: you are replaying history. See below.
+Expected during recovery: you are replaying history. A replayed message keeps
+the `messageId` it was first delivered with (`meta.messageId` in the SDK), so
+drop any id you have already applied. See below.
+
+### A replayed message has the wrong routing key
+
+Recovery delivers straight to your queue, so a replayed message's routing key
+is the queue name. The original key is in the `x-sos-routing-key` header, which
+the SDK exposes as `meta.routingKey`.
 
 ## Recovery problems
 
 ### `recoveryStarted` fires but `recoveryCompleted` never does
 
-The replay window may be larger than the retention period, or the REST API is
-unreachable while AMQP is fine: recovery is driven over REST even though the
-messages arrive over AMQP. Check `apiHost` connectivity separately from
-`amqpHost`.
+A request completes when its `snapshot_complete` reaches your queue. If it
+never does, check these:
+
+- The REST API is unreachable while AMQP is fine. Recovery is requested over
+  REST even though the messages arrive over AMQP, so check `apiHost`
+  connectivity separately from `amqpHost`.
+- The replay window is larger than the retention period.
+- The server failed the request. `GET /recovery/{producer}/status` then says
+  `failed` with an `error`, and the SDK raises it on `error`.
 
 ### Recovery loops
 
@@ -122,9 +136,10 @@ Correct behaviour. Treat everything between `disconnected` and
 
 ### A market id matches nothing
 
-Market ids are templates. `fight_winner_bin{ }` has a placeholder filled per
-event; `fight_winner_3way_{red|draw|blue}` enumerates alternatives. Parse the
-template or map on market name: do not compare as fixed strings.
+The feed's market `id` is numeric. Match it against `marketId` in
+`sos_market_catalogue`, not against `templateId`. `templateId` is SWA's
+catalogue name (`fight_winner_bin{ }`, `fight_winner_3way_{red|draw|blue}`) and
+never appears in a feed message.
 
 ### A market has no selections
 
@@ -141,7 +156,7 @@ the exclusion appears on both legs; you only need to check one direction.
 
 Include all of these: the first three are what make a report actionable,
 
-- The **sport** and your **`bindingPatterns`** verbatim
+- The **sport** and your **`bindingPatterns`** verbatim, if you set any
 - A **timestamp range in UTC** for when the problem occurred
 - The **event id** for a specific affected event, if there is one
 - Whether `alive` was arriving during that window

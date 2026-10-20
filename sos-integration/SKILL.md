@@ -37,9 +37,8 @@ skill was written.
 | Current odds for one event over REST, not the queue? | `sos_probabilities` |
 
 Call `sos_client_reference` before writing any client configuration. It returns
-the constructor options with their real defaults and a `knownBehaviour` list;
-both of the traps below come back in that list, so you get them without relying
-on this file being current.
+the published getting-started, fixtures, probabilities, recovery and message
+pages, including the constructor options with their defaults.
 
 ## When the MCP is unreachable: stop, do not improvise
 

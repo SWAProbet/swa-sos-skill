@@ -91,6 +91,14 @@ python -m scripts.package_skill <path-to>/swa-sos-skill/sos-integration
 frontmatter before packaging, so a broken skill fails here rather than on a
 partner's machine.
 
+## Formatting the server
+
+The server's TypeScript is formatted by Prettier at 79 columns
+(`npm run format` in `server/`). Every pull request touching `server/` runs
+the typecheck, `npm run format:check` and `npm run lint:lines`, which fails on
+any added or changed line longer than 79 characters, including comments and
+strings Prettier cannot wrap.
+
 ## Related
 
 | Repo | Why you would open it |
